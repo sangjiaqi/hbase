@@ -392,7 +392,7 @@ public class HFileReaderV2 extends AbstractHFileReader {
       throw new IOException("Block index not loaded");
     }
     long trailerOffset = trailer.getLoadOnOpenDataOffset();
-    if (dataBlockOffset < 0 || dataBlockOffset >= trailerOffset) {
+    if (dataBlockOffset < 0 || dataBlockOffset > trailerOffset) {
       throw new IOException("Requested block is out of range: " + dataBlockOffset +
         ", lastDataBlockOffset: " + trailer.getLastDataBlockOffset() +
         ", trailer.getLoadOnOpenDataOffset: " + trailerOffset);
