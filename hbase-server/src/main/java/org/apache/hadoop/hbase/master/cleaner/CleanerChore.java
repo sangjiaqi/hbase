@@ -118,7 +118,9 @@ public abstract class CleanerChore<T extends FileCleanerDelegate> extends Schedu
       @SuppressWarnings("unchecked")
       T cleaner = (T) c.newInstance();
       cleaner.setConf(conf);
-      cleaner.init(this.params);
+      if (this.params != null) {
+          cleaner.init(this.params);
+      }
       return cleaner;
     } catch (Exception e) {
       LOG.warn("Can NOT create CleanerDelegate: " + className, e);
