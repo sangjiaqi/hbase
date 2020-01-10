@@ -27,9 +27,11 @@ import static org.mockito.Mockito.doAnswer;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.common.collect.Lists;
@@ -40,8 +42,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Abortable;
 import org.apache.hadoop.hbase.ChoreService;
 import org.apache.hadoop.hbase.CoordinatedStateManager;
+import org.apache.hadoop.hbase.CoordinatedStateManagerFactory;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.HConstants;
+import org.apache.hadoop.hbase.master.HMaster;
 import org.apache.hadoop.hbase.testclassification.MediumTests;
 import org.apache.hadoop.hbase.Server;
 import org.apache.hadoop.hbase.ServerName;
@@ -102,6 +106,11 @@ public class TestLogsCleaner {
         HConstants.HREGION_OLDLOGDIR_NAME);
     String fakeMachineName =
       URLEncoder.encode(server.getServerName().toString(), "UTF8");
+    CoordinatedStateManager cp = CoordinatedStateManagerFactory.getCoordinatedStateManager(
+            TEST_UTIL.getConfiguration());
+    HMaster master = new HMaster(TEST_UTIL.getConfiguration(), cp);
+    Map<String, Object> param = new HashMap<String, Object>();
+    param.put("master", master);
 
     final FileSystem fs = FileSystem.get(conf);
 
@@ -144,7 +153,7 @@ public class TestLogsCleaner {
 
     assertEquals(34, fs.listStatus(oldLogDir).length);
 
-    LogCleaner cleaner  = new LogCleaner(1000, server, conf, fs, oldLogDir);
+    LogCleaner cleaner  = new LogCleaner(1000, server, conf, fs, oldLogDir, param);
 
     cleaner.chore();
 

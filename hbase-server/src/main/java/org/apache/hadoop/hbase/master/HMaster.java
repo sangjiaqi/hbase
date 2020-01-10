@@ -1143,10 +1143,12 @@ public class HMaster extends HRegionServer implements MasterServices, Server {
 
    // Start log cleaner thread
    int cleanerInterval = conf.getInt("hbase.master.cleaner.interval", 60 * 1000);
+    Map<String, Object> param = new HashMap<String, Object>();
+    param.put(MASTER, this);
    this.logCleaner =
       new LogCleaner(cleanerInterval,
          this, conf, getMasterFileSystem().getFileSystem(),
-         getMasterFileSystem().getOldLogDir());
+         getMasterFileSystem().getOldLogDir(), param);
     getChoreService().scheduleChore(logCleaner);
 
    //start the hfile archive cleaner thread

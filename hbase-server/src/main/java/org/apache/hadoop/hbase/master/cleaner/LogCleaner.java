@@ -28,6 +28,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Stoppable;
 import org.apache.hadoop.hbase.wal.DefaultWALProvider;
 
+import java.util.Map;
+
 /**
  * This Chore, every time it runs, will attempt to delete the WALs in the old logs folder. The WAL
  * is only deleted if none of the cleaner delegates says otherwise.
@@ -45,8 +47,8 @@ public class LogCleaner extends CleanerChore<BaseLogCleanerDelegate> {
    * @param oldLogDir the path to the archived logs
    */
   public LogCleaner(final int p, final Stoppable s, Configuration conf, FileSystem fs,
-      Path oldLogDir) {
-    super("LogsCleaner", p, s, conf, fs, oldLogDir, HBASE_MASTER_LOGCLEANER_PLUGINS);
+      Path oldLogDir, Map<String, Object> params) {
+    super("LogsCleaner", p, s, conf, fs, oldLogDir, HBASE_MASTER_LOGCLEANER_PLUGINS, params);
   }
 
   @Override
